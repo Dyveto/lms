@@ -30,8 +30,8 @@ import static org.mockito.Mockito.verify;
 class AssessmentServiceTest {
 
     @Mock private AssessmentRepository assessmentRepository;
-    @Mock private StudentRepository studentRepository; // Added missing mock
-    @Mock private CourseRepository courseRepository;   // Added missing mock
+    @Mock private StudentRepository studentRepository;
+    @Mock private CourseRepository courseRepository;
     @Mock private AssessmentMapper assessmentMapper;
 
     @InjectMocks private AssessmentServiceImpl assessmentService;
@@ -48,23 +48,19 @@ class AssessmentServiceTest {
         assessment.setType("EXAMEN_FINAL");
         assessment.setTakenAt(Instant.now());
 
-        // Params: studentId, courseId, type, score, takenAt
         requestDto = new AssessmentRequestDto(1L, 1L, "EXAMEN_FINAL", 95, assessment.getTakenAt());
         
-        // Params: id, studentId, courseId, type, score, takenAt
         responseDto = new AssessmentResponseDto(1L, 1L, 1L, "EXAMEN_FINAL", 95, assessment.getTakenAt());
     }
 
     @Test
     @DisplayName("Prueba para crear una evaluación")
     void givenAssessmentRequest_whenCreate_thenReturnAssessmentResponse() {
-        // Create dummy entities to satisfy the repository validation checks
         Student dummyStudent = new Student();
         dummyStudent.setId(1L);
         Course dummyCourse = new Course();
         dummyCourse.setId(1L);
 
-        // Stub the findById calls to prevent NullPointerExceptions
         given(studentRepository.findById(anyLong())).willReturn(Optional.of(dummyStudent));
         given(courseRepository.findById(anyLong())).willReturn(Optional.of(dummyCourse));
         
@@ -75,7 +71,6 @@ class AssessmentServiceTest {
         AssessmentResponseDto savedAssessment = assessmentService.create(requestDto);
 
         assertThat(savedAssessment).isNotNull();
-        // Updated to standard Lombok getter syntax
         assertThat(savedAssessment.getScore()).isEqualTo(95);
         assertThat(savedAssessment.getType()).isEqualTo("EXAMEN_FINAL");
         verify(assessmentRepository).save(any(Assessment.class));

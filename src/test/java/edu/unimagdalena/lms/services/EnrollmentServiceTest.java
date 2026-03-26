@@ -30,8 +30,8 @@ import static org.mockito.Mockito.verify;
 class EnrollmentServiceTest {
 
     @Mock private EnrollmentRepository enrollmentRepository;
-    @Mock private StudentRepository studentRepository; // Added missing mock
-    @Mock private CourseRepository courseRepository;   // Added missing mock
+    @Mock private StudentRepository studentRepository;
+    @Mock private CourseRepository courseRepository;
     @Mock private EnrollmentMapper enrollmentMapper;
 
     @InjectMocks private EnrollmentServiceImpl enrollmentService;
@@ -59,8 +59,8 @@ class EnrollmentServiceTest {
         Course dummyCourse = new Course();
         dummyCourse.setId(1L);
 
-        given(studentRepository.findById(anyLong())).willReturn(Optional.of(dummyStudent)); // Stub findById
-        given(courseRepository.findById(anyLong())).willReturn(Optional.of(dummyCourse));   // Stub findById
+        given(studentRepository.findById(anyLong())).willReturn(Optional.of(dummyStudent));
+        given(courseRepository.findById(anyLong())).willReturn(Optional.of(dummyCourse));
         given(enrollmentMapper.toEntity(any(EnrollmentRequestDto.class))).willReturn(enrollment);
         given(enrollmentRepository.save(any(Enrollment.class))).willReturn(enrollment);
         given(enrollmentMapper.toDto(any(Enrollment.class))).willReturn(responseDto);

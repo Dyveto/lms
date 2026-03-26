@@ -37,10 +37,8 @@ class InstructorServiceTest {
         instructor.setFullName("María Gómez");
         instructor.setEmail("maria.gomez@ejemplo.com");
 
-        // FIXED: Swapped so email is first, fullName is second
         requestDto = new InstructorRequestDto("maria.gomez@ejemplo.com", "María Gómez");
         
-        // FIXED: Swapped so email is second, fullName is third
         responseDto = new InstructorResponseDto(1L, "maria.gomez@ejemplo.com", "María Gómez");
     }
 
@@ -54,7 +52,6 @@ class InstructorServiceTest {
         InstructorResponseDto savedInstructor = instructorService.create(requestDto);
 
         assertThat(savedInstructor).isNotNull();
-        // Updated to standard getter
         assertThat(savedInstructor.getFullName()).isEqualTo("María Gómez");
         verify(instructorRepository).save(any(Instructor.class));
     }
