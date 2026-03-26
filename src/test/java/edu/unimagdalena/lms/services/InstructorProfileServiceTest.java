@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 class InstructorProfileServiceTest {
 
     @Mock private InstructorProfileRepository profileRepository;
-    @Mock private InstructorRepository instructorRepository; // Added missing mock
+    @Mock private InstructorRepository instructorRepository;
     @Mock private InstructorProfileMapper profileMapper;
 
     @InjectMocks private InstructorProfileServiceImpl profileService;
@@ -43,21 +43,17 @@ class InstructorProfileServiceTest {
         profile.setBio("Experta en bases de datos y backend.");
         profile.setPhone("+573001234567");
 
-        // FIXED: Swapped so phone is second, bio is third
         requestDto = new InstructorProfileRequestDto(1L, "+573001234567", "Experta en bases de datos y backend.");
         
-        // FIXED: Swapped so phone is third, bio is fourth
         responseDto = new InstructorProfileResponseDto(1L, 1L, "+573001234567", "Experta en bases de datos y backend.");
     }
 
     @Test
     @DisplayName("Prueba para crear un perfil de instructor")
     void givenProfileRequest_whenCreate_thenReturnProfileResponse() {
-        // Create dummy entity to satisfy the repository validation check
         Instructor dummyInstructor = new Instructor();
         dummyInstructor.setId(1L);
 
-        // Stub the findById call to prevent NullPointerException
         given(instructorRepository.findById(anyLong())).willReturn(Optional.of(dummyInstructor));
         
         given(profileMapper.toEntity(any(InstructorProfileRequestDto.class))).willReturn(profile);
@@ -67,7 +63,6 @@ class InstructorProfileServiceTest {
         InstructorProfileResponseDto savedProfile = profileService.create(requestDto);
 
         assertThat(savedProfile).isNotNull();
-        // Updated to standard getter
         assertThat(savedProfile.getBio()).isEqualTo("Experta en bases de datos y backend.");
         verify(profileRepository).save(any(InstructorProfile.class));
     }

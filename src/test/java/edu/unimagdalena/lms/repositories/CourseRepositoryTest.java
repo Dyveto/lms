@@ -31,7 +31,7 @@ public class CourseRepositoryTest {
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
 
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop"); // Crea todas las entidades en la base de datos
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }
 
     @Autowired
@@ -39,10 +39,9 @@ public class CourseRepositoryTest {
 
     private Course courseToTest;
 
-    // Se ejecuta antes de cada @Test para tener datos limpios
     @BeforeEach
     void setUp() {
-        courseRepository.deleteAll(); // se limpia la tabla
+        courseRepository.deleteAll();
 
         courseToTest = Course.builder()
                 .title("Spring Boot")
@@ -54,27 +53,21 @@ public class CourseRepositoryTest {
     @Test
     @DisplayName("Test para crear un curso")
     void testCreateCourse() {
-        // Arrange (preparar): se hace en el setUp()
 
-        // Act (actuar): Guarda el curso
         Course savedCourse = courseRepository.save(courseToTest);
 
-        // Assert (afirmar/verificar): Comprobamos que se guardo correctamente
         assertThat(savedCourse).isNotNull();
-        assertThat(savedCourse.getId()).isGreaterThan(0); // si la base de datos le asigna ID, es que si se guardo
+        assertThat(savedCourse.getId()).isGreaterThan(0);
         assertThat(savedCourse.getTitle()).isEqualTo("Spring Boot");
     }
 
     @Test
     @DisplayName("Test para leer un curso por ID")
     void testReadCourse() {
-        // Arrange: guardo un curso para poder buscarlo
         Course savedCourse = courseRepository.save(courseToTest);
 
-        // Act: se busca el curso por su ID
         Optional<Course> foundCourse = courseRepository.findById(savedCourse.getId());
 
-        // Assert: verifica si lo encontro y si es el correcto
         assertThat(foundCourse).isPresent();
         assertThat(foundCourse.get().getStatus()).isEqualTo("DRAFT");
     }
@@ -82,15 +75,12 @@ public class CourseRepositoryTest {
     @Test
     @DisplayName("Test para actualizar un curso")
     void testUpdateCourse() {
-        // Arrange: guardo el curso inicial
         Course savedCourse = courseRepository.save(courseToTest);
 
-        // Act: Modifico los datos y los vuelvo a guardar
         savedCourse.setTitle("Spring Boot Actualizado");
         savedCourse.setActive(false);
         Course updatedCourse = courseRepository.save(savedCourse);
 
-        // Assert: verifico que los cambios se actualizaron
         assertThat(updatedCourse.getTitle()).isEqualTo("Spring Boot Actualizado");
         assertThat(updatedCourse.getActive()).isFalse();
     }
@@ -98,16 +88,12 @@ public class CourseRepositoryTest {
     @Test
     @DisplayName("Test para eliminar un curso")
     void testDeleteCourse() {
-        // Arrange: guarda el curso inicial
         Course savedCourse = courseRepository.save(courseToTest);
 
-        // Act: elimina el curso usando su ID
         courseRepository.deleteById(savedCourse.getId());
 
-        // busca el curso de nuevo
         Optional<Course> deletedCourse = courseRepository.findById(savedCourse.getId());
 
-        // Assert: verifica que el curso ya no exista
         assertThat(deletedCourse).isEmpty();
     }
 }
